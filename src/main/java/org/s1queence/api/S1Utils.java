@@ -49,6 +49,6 @@ public class S1Utils {
     }
 
     public static Location toCenterLocation(Location loc) {
-        return new Location(loc.getWorld(), loc.getBlockX() + 0.5D, loc.getBlockY() + 0.5D, loc.getBlockZ() + 0.5D);
+        return new Location(loc.getWorld(), loc.getBlockX() + 0.5D, loc.getBlockY(), loc.getBlockZ() + 0.5D);
     }
 }
