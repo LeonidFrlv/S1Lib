@@ -1,0 +1,13 @@
+#plugin
+onEnable_msg: "%plugin% &aБыл включен!"
+onDisable_msg: "%plugin% &cБыл выключен!"
+onReload_msg: "%plugin% &aКонфиг был обновлён!"
+
+#errors
+no_permission_alert: "&4Нет прав!"
+player_not_found: "&4Игрок не найден!"
+
+interact:
+  too_far: "Слишком далеко"
+  on_air: "Вы не можете сделать этого прыгая или падая"
+  from_vehicle: "Взаимодействие на транспортном средстве отключено"

@@ -3,9 +3,10 @@ package org.s1queence.api;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.s1queence.S1queenceLib;
 
 public class S1Booleans {
-    private boolean checkIfFar(Player player, Location TargetLocation) {
+    private static boolean checkIfFar(Player player, Location TargetLocation) {
         int TargetPosX = TargetLocation.getBlockX();
         int TargetPosY = TargetLocation.getBlockY();
         int TargetPosZ = TargetLocation.getBlockZ();
@@ -17,17 +18,16 @@ public class S1Booleans {
         return (TargetPosX > PlayerPosX ? TargetPosX - PlayerPosX > 3 : PlayerPosX - TargetPosX > 3) || (TargetPosY > PlayerPosY ? TargetPosY - PlayerPosY > 2 : PlayerPosY - TargetPosY > 3) || (TargetPosZ > PlayerPosZ ? TargetPosZ - PlayerPosZ > 3 : PlayerPosZ - TargetPosZ > 3);
     }
 
-    public String isAllowableInteraction(Player player, Location TargetLocation) {
+    public static String isAllowableInteraction(Player player, Location TargetLocation, S1queenceLib lib) {
         String result = null;
 
-        if (!((Entity) player).isOnGround() && !player.isInWater()) result = "Вы не можете сделать этого прыгая или падая";
+        if (!((Entity) player).isOnGround() && !player.isInWater()) result = lib.getTextConfig().getString("interact.on_air");
 
-        if (checkIfFar(player, TargetLocation)) result = "Слишком далеко";
+        if (checkIfFar(player, TargetLocation)) result = lib.getTextConfig().getString("interact.too_far");
 
-        if (player.isInsideVehicle()) result = "Взаимодействие на транспортном средстве отключено";
+        if (player.isInsideVehicle()) result = lib.getTextConfig().getString("interact.from_vehicle");
 
         return result;
     }
-
 
 }

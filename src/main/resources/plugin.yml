@@ -1,3 +1,8 @@
 name: S1queenceLib
-version: 0.1
+version: '${project.version}'
+api-version: '1.18'
 main: org.s1queence.S1queenceLib
+commands:
+  s1lib:
+    usage: /s1lib <action>
+    permission: s1.perms.reload
