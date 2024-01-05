@@ -41,14 +41,14 @@ public class CountDownAction {
     private final String cancelTargetTitle;
     private final String cancelTargetSubtitle;
     private final int seconds;
-    private final ProgressBar pb;
+    private final org.s1queence.api.countdown.progressbar.ProgressBar pb;
 
     public CountDownAction(
             @NotNull Player player,
             @NotNull Player target,
             int seconds,
             boolean isDoubleRunnableAction,
-            @NotNull ProgressBar pb,
+            @NotNull org.s1queence.api.countdown.progressbar.ProgressBar pb,
             @NotNull JavaPlugin plugin,
 
             @NotNull String everyTickBothActionBarMsg,
