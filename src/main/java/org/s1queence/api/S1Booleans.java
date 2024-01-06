@@ -30,7 +30,7 @@ public class S1Booleans {
         return result;
     }
 
-    private static boolean isLuck(double chance) {
+    public static boolean isLuck(double chance) {
         if (chance >= 100.0d) return true;
         if (chance <= 0.0d) return false;
 
