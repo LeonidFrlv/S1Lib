@@ -18,7 +18,7 @@ public class S1queenceLib extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveResource("README.txt", false);
+        saveResource("README.txt", true);
 
         try {
             textConfig = YamlDocument.create(new File(getDataFolder(), "text.yml"), Objects.requireNonNull(getResource("text.yml")));

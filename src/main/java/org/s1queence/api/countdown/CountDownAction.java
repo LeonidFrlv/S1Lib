@@ -43,14 +43,14 @@ public class CountDownAction {
     private String cancelTargetTitle;
     private String cancelTargetSubtitle;
     private final int seconds;
-    private final org.s1queence.api.countdown.progressbar.ProgressBar pb;
+    private final ProgressBar pb;
 
     public CountDownAction(
             @NotNull Player player,
             @NotNull Player target,
             int seconds,
             boolean isDoubleRunnableAction,
-            @NotNull org.s1queence.api.countdown.progressbar.ProgressBar pb,
+            @NotNull ProgressBar pb,
             @NotNull JavaPlugin plugin,
 
             @NotNull String everyTickBothActionBarMsg,
@@ -103,7 +103,7 @@ public class CountDownAction {
         this.cancelPlayerSubtitle = getTextWithInsertedPlayerName(cancelPlayerSubtitle, tName);
     }
 
-    public static Map<Player, Player> getPreprocessActionHandlers() { // reload делать не забудь этой фигни и через плагины другие тоже чтобы релодилось, когда их релодишь (типо чтобы не надо было библиотеку релодить вместе с плагином)
+    public static Map<Player, Player> getPreprocessActionHandlers() {
         return PreprocessActionHandlers;
     }
 
