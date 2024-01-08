@@ -36,6 +36,7 @@ public class CountDownAction {
     private final String completePlayerSubtitle;
     private String completeTargetTitle;
     private String completeTargetSubtitle;
+    private int ticksLeft;
     private final String cancelBothActionBarMsg;
     private final String cancelPlayerTitle;
     private final String cancelPlayerSubtitle;
@@ -171,10 +172,6 @@ public class CountDownAction {
     }
 
     protected void actionCountDown() {
-        if (isPlayerMakingSoloCDAction(target) && !isSoloAction()) {
-            PreprocessActionHandlers.remove(target);
-            DoubleRunnableActionHandlers.remove(target);
-        }
 
         if (isPlayerInCountDownAction(player) || isPlayerInCountDownAction(target)) return;
 
@@ -206,6 +203,7 @@ public class CountDownAction {
                 }
 
                 currentTicks--;
+                ticksLeft = currentTicks;
                 player.closeInventory();
                 if (!isSoloAction()) target.closeInventory();
 
@@ -224,5 +222,6 @@ public class CountDownAction {
 
     protected Player getPlayer() {return player;}
     protected Player getTarget() {return target;}
+    protected int getTicksLeft() {return ticksLeft;}
     protected ProgressBar getProgressBar() {return pb;}
 }
