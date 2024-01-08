@@ -166,8 +166,12 @@ public class CountDownAction {
         return ChatColor.translateAlternateColorCodes('&', toInsert.replace("%progress_bar%", pb).replace("%percent%", percent));
     }
 
+    protected boolean isSoloAction() {
+        return target.equals(player);
+    }
+
     protected void actionCountDown() {
-        if (isPlayerMakingSoloCDAction(target)) {
+        if (isPlayerMakingSoloCDAction(target) && !isSoloAction()) {
             PreprocessActionHandlers.remove(target);
             DoubleRunnableActionHandlers.remove(target);
         }
@@ -192,9 +196,9 @@ public class CountDownAction {
                     PreprocessActionHandlers.remove(player);
                     if (isDoubleRunnableAction) DoubleRunnableActionHandlers.put(player, target);
                     sendActionBarMsg(player, completeBothActionBarMsg);
-                    sendActionBarMsg(target, completeBothActionBarMsg);
+                    if (!isSoloAction()) sendActionBarMsg(target, completeBothActionBarMsg);
 
-                    target.sendTitle(completeTargetTitle, completeTargetSubtitle, 0, 75, 15);
+                    if (!isSoloAction()) target.sendTitle(completeTargetTitle, completeTargetSubtitle, 0, 75, 15);
                     player.sendTitle(completePlayerTitle, completePlayerSubtitle, 0, 75, 15);
 
                     cancel();
@@ -203,7 +207,7 @@ public class CountDownAction {
 
                 currentTicks--;
                 player.closeInventory();
-                target.closeInventory();
+                if (!isSoloAction()) target.closeInventory();
 
                 pb.setCurrent((int)ACTION_TIME - currentTicks);
                 pb.setMax((int)ACTION_TIME);
@@ -211,9 +215,9 @@ public class CountDownAction {
                 String percent = pb.getPercent();
 
                 sendActionBarMsg(player, getTextWithInsertedProgressBar(everyTickBothActionBarMsg, stringedBar, percent));
-                sendActionBarMsg(target, getTextWithInsertedProgressBar(everyTickBothActionBarMsg, stringedBar, percent));
+                if (!isSoloAction()) sendActionBarMsg(target, getTextWithInsertedProgressBar(everyTickBothActionBarMsg, stringedBar, percent));
                 player.sendTitle(getTextWithInsertedProgressBar(everyTickPlayerTitle, stringedBar, percent), getTextWithInsertedProgressBar(everyTickPlayerSubtitle, stringedBar, percent), 0, 20, 0);
-                target.sendTitle(getTextWithInsertedProgressBar(everyTickTargetTitle, stringedBar, percent), getTextWithInsertedProgressBar(everyTickTargetSubtitle, stringedBar, percent), 0, 20, 0);
+                if (!isSoloAction()) target.sendTitle(getTextWithInsertedProgressBar(everyTickTargetTitle, stringedBar, percent), getTextWithInsertedProgressBar(everyTickTargetSubtitle, stringedBar, percent), 0, 20, 0);
             }
         }.runTaskTimer(plugin, 0, 1);
     }
