@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.s1queence.api.countdown.progressbar.ProgressBar;
 
 import java.util.HashMap;
@@ -26,20 +27,20 @@ public class CountDownAction {
     private static final Map<Player, Player> DoubleRunnableActionHandlers = new HashMap<>();
     private final boolean isDoubleRunnableAction;
     private final String everyTickBothActionBarMsg;
-    private final String everyTickTargetTitle;
-    private final String everyTickTargetSubtitle;
+    private String everyTickTargetTitle;
+    private String everyTickTargetSubtitle;
     private final String everyTickPlayerTitle;
     private final String everyTickPlayerSubtitle;
     private final String completeBothActionBarMsg;
     private final String completePlayerTitle;
     private final String completePlayerSubtitle;
-    private final String completeTargetTitle;
-    private final String completeTargetSubtitle;
+    private String completeTargetTitle;
+    private String completeTargetSubtitle;
     private final String cancelBothActionBarMsg;
     private final String cancelPlayerTitle;
     private final String cancelPlayerSubtitle;
-    private final String cancelTargetTitle;
-    private final String cancelTargetSubtitle;
+    private String cancelTargetTitle;
+    private String cancelTargetSubtitle;
     private final int seconds;
     private final org.s1queence.api.countdown.progressbar.ProgressBar pb;
 
@@ -54,20 +55,20 @@ public class CountDownAction {
             @NotNull String everyTickBothActionBarMsg,
             @NotNull String everyTickPlayerTitle,
             @NotNull String everyTickPlayerSubtitle,
-            @NotNull String everyTickTargetTitle,
-            @NotNull String everyTickTargetSubtitle,
+            @Nullable String everyTickTargetTitle,
+            @Nullable String everyTickTargetSubtitle,
 
             @NotNull String completeBothActionBarMsg,
             @NotNull String completePlayerTitle,
             @NotNull String completePlayerSubtitle,
-            @NotNull String completeTargetTitle,
-            @NotNull String completeTargetSubtitle,
+            @Nullable String completeTargetTitle,
+            @Nullable String completeTargetSubtitle,
 
             @NotNull String cancelBothActionBarMsg,
             @NotNull String cancelPlayerTitle,
             @NotNull String cancelPlayerSubtitle,
-            @NotNull String cancelTargetTitle,
-            @NotNull String cancelTargetSubtitle
+            @Nullable String cancelTargetTitle,
+            @Nullable String cancelTargetSubtitle
         )
     {
         this.player = player;
@@ -85,12 +86,12 @@ public class CountDownAction {
         this.cancelBothActionBarMsg = cancelBothActionBarMsg;
 
         String pName = player.getName();
-        this.everyTickTargetTitle = getTextWithInsertedPlayerName(everyTickTargetTitle, pName);
-        this.everyTickTargetSubtitle = getTextWithInsertedPlayerName(everyTickTargetSubtitle, pName);
-        this.completeTargetTitle = getTextWithInsertedPlayerName(completeTargetTitle, pName);
-        this.completeTargetSubtitle = getTextWithInsertedPlayerName(completeTargetSubtitle, pName);
-        this.cancelTargetTitle = getTextWithInsertedPlayerName(cancelTargetTitle, pName);
-        this.cancelTargetSubtitle = getTextWithInsertedPlayerName(cancelTargetSubtitle, pName);
+        if (everyTickTargetTitle != null) this.everyTickTargetTitle = getTextWithInsertedPlayerName(everyTickTargetTitle, pName);
+        if (everyTickTargetSubtitle != null) this.everyTickTargetSubtitle = getTextWithInsertedPlayerName(everyTickTargetSubtitle, pName);
+        if (completeTargetTitle != null) this.completeTargetTitle = getTextWithInsertedPlayerName(completeTargetTitle, pName);
+        if (completeTargetSubtitle != null) this.completeTargetSubtitle = getTextWithInsertedPlayerName(completeTargetSubtitle, pName);
+        if (cancelTargetTitle != null) this.cancelTargetTitle = getTextWithInsertedPlayerName(cancelTargetTitle, pName);
+        if (cancelTargetSubtitle != null) this.cancelTargetSubtitle = getTextWithInsertedPlayerName(cancelTargetSubtitle, pName);
 
         String tName = target.getName();
         this.everyTickPlayerTitle = getTextWithInsertedPlayerName(everyTickPlayerTitle, tName);
