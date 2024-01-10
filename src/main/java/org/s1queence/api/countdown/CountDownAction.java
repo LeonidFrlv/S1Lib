@@ -26,6 +26,7 @@ public class CountDownAction {
     private static final Map<Player, Player> PreprocessActionHandlers = new HashMap<>();
     private static final Map<Player, Player> DoubleRunnableActionHandlers = new HashMap<>();
     private final boolean isDoubleRunnableAction;
+    private final boolean isClosePlayersInventoriesEveryTick;
     private final String everyTickBothActionBarMsg;
     private String everyTickTargetTitle;
     private String everyTickTargetSubtitle;
@@ -50,6 +51,7 @@ public class CountDownAction {
             @NotNull Player target,
             int seconds,
             boolean isDoubleRunnableAction,
+            boolean isClosePlayersInventoriesEveryTick,
             @NotNull ProgressBar pb,
             @NotNull JavaPlugin plugin,
 
@@ -77,6 +79,7 @@ public class CountDownAction {
         this.seconds = seconds;
         this.pb = pb;
         this.isDoubleRunnableAction = isDoubleRunnableAction;
+        this.isClosePlayersInventoriesEveryTick = isClosePlayersInventoriesEveryTick;
         this.plugin = plugin;
         this.launchItem = player.getInventory().getItemInMainHand();
         this.initialPlayerSpeed = player.getWalkSpeed();
@@ -203,8 +206,10 @@ public class CountDownAction {
 
                 currentTicks--;
                 ticksLeft = currentTicks;
-                player.closeInventory();
-                if (!isSoloAction()) target.closeInventory();
+                if (isClosePlayersInventoriesEveryTick) {
+                    player.closeInventory();
+                    if (!isSoloAction()) target.closeInventory();
+                }
 
                 pb.setCurrent((int)ACTION_TIME - currentTicks);
                 pb.setMax((int)ACTION_TIME);
