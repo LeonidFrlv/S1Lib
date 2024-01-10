@@ -136,20 +136,20 @@ public class CountDownAction {
 
         if (sendDefaultMessages) {
             player.sendTitle(cancelPlayerTitle, cancelPlayerSubtitle, 0, 75, 20);
-            target.sendTitle(cancelTargetTitle, cancelTargetSubtitle, 0, 75, 20);
+            if (!isSoloAction()) target.sendTitle(cancelTargetTitle, cancelTargetSubtitle, 0, 75, 20);
             sendActionBarMsg(player, cancelBothActionBarMsg);
-            sendActionBarMsg(target, cancelBothActionBarMsg);
+            if (!isSoloAction()) sendActionBarMsg(target, cancelBothActionBarMsg);
         }
 
         player.setWalkSpeed(initialPlayerSpeed);
-        target.setWalkSpeed(initialTargetSpeed);
+        if (!isSoloAction()) target.setWalkSpeed(initialTargetSpeed);
         player.closeInventory();
-        target.closeInventory();
+        if (!isSoloAction()) target.closeInventory();
     }
 
     protected void reducePlayersWalkSpeed() {
         if (initialPlayerSpeed > CDA_WALK_SPEED) player.setWalkSpeed(CDA_WALK_SPEED);
-        if (initialTargetSpeed > CDA_WALK_SPEED) target.setWalkSpeed(CDA_WALK_SPEED);
+        if (initialTargetSpeed > CDA_WALK_SPEED && !isSoloAction()) target.setWalkSpeed(CDA_WALK_SPEED);
     }
 
     protected boolean isActionCanceled() {
@@ -172,7 +172,6 @@ public class CountDownAction {
     }
 
     protected void actionCountDown() {
-
         if (isPlayerInCountDownAction(player) || isPlayerInCountDownAction(target)) return;
 
         reducePlayersWalkSpeed();
