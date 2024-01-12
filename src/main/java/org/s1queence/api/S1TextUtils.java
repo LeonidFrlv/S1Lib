@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.s1queence.plugin.libs.block.implementation.Section;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,5 +131,56 @@ public class S1TextUtils {
         is.setItemMeta(im);
         return is;
     }
+
+    private static int getAmount(int min, int max) {
+        max -= min;
+        return (int) (Math.random() * ++max) + min;
+    }
+
+    private static boolean getIsReceived(double chance) {
+        if (chance >= 100.0d) return true;
+
+        return (1 + Math.random() * 100) <= chance;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ItemStack createItemFromMapWithChanceAndRandomAmount(Map<String, Object> mappedItem) {
+        double dropChance = (double) mappedItem.get("drop_chance");
+        if (!getIsReceived(dropChance)) return null;
+
+        Map<String, Object> minMax = ((Section) mappedItem.get("amount")).getStringRouteMappedValues(true);
+        int min = (Integer)minMax.get("min");
+        int max = (Integer)minMax.get("max");
+        int amount = getAmount(min, max);
+
+        if (mappedItem.get("material") == null) return null;
+        Material material = Material.getMaterial(mappedItem.get("material").toString().toUpperCase());
+        if (material == null) return null;
+
+        ItemStack is = new ItemStack(material, amount);
+
+        ItemMeta im = is.getItemMeta();
+
+        if (im == null) return null;
+
+        String name = (String)mappedItem.get("name");
+        if (isItemPropertyNonDefaultOrNull(name)) im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+
+        Object cmd = mappedItem.get("cmd");
+        if (isItemPropertyNonDefaultOrNull(cmd) && cmd instanceof String) im.setCustomModelData(Integer.parseInt((String)cmd));
+
+        Object configLore = mappedItem.get("lore");
+        if (isItemPropertyNonDefaultOrNull(configLore)) {
+            List<String> lore = new ArrayList<>();
+            for (String row : ((List<String>) configLore)) {
+                lore.add(ChatColor.translateAlternateColorCodes('&', row));
+            }
+            im.setLore(lore);
+        }
+
+        is.setItemMeta(im);
+        return is;
+    }
+
 
 }
