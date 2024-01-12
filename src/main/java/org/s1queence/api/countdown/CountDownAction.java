@@ -226,6 +226,7 @@ public class CountDownAction {
 
     protected Player getPlayer() {return player;}
     protected Player getTarget() {return target;}
+    protected ItemStack getLaunchItem() {return launchItem;}
     protected int getTicksLeft() {return ticksLeft;}
     protected ProgressBar getProgressBar() {return pb;}
 }
