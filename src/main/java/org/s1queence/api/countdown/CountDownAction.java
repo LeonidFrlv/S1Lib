@@ -1,6 +1,7 @@
 package org.s1queence.api.countdown;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,8 +17,9 @@ import static org.s1queence.api.S1TextUtils.getTextWithInsertedPlayerName;
 import static org.s1queence.api.S1Utils.sendActionBarMsg;
 
 public class CountDownAction {
-    public static final Float CDA_WALK_SPEED = 0.040013135F;
+    public static final float CDA_WALK_SPEED = 0.04013135F;
     private final Player player;
+    private final Location startLocation;
     private final Player target;
     private final JavaPlugin plugin;
     private final ItemStack launchItem;
@@ -81,6 +83,7 @@ public class CountDownAction {
         this.isDoubleRunnableAction = isDoubleRunnableAction;
         this.isClosePlayersInventoriesEveryTick = isClosePlayersInventoriesEveryTick;
         this.plugin = plugin;
+        this.startLocation = new Location(player.getWorld(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
         this.launchItem = player.getInventory().getItemInMainHand();
         this.initialPlayerSpeed = player.getWalkSpeed();
         this.initialTargetSpeed = target.getWalkSpeed();
@@ -162,8 +165,9 @@ public class CountDownAction {
         boolean isInAction = isPlayerInCountDownAction(player) || isPlayerInCountDownAction(target);
         boolean isOnline = player.isOnline() || target.isOnline();
         boolean isDead = player.isDead() || target.isDead();
+        boolean isLeaveFromStartLocation = !(new Location(player.getWorld(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()).equals(startLocation));
 
-        return isSneaking || !isLaunchItemInitial || !isTargetNearby || !isInAction || !isOnline || isDead;
+        return isSneaking || !isLaunchItemInitial || !isTargetNearby || !isInAction || !isOnline || isDead || isLeaveFromStartLocation;
     }
 
     protected String getTextWithInsertedProgressBar(String toInsert, String pb, String percent) {
@@ -195,11 +199,9 @@ public class CountDownAction {
                     PreprocessActionHandlers.remove(player);
                     if (isDoubleRunnableAction) DoubleRunnableActionHandlers.put(player, target);
                     sendActionBarMsg(player, completeBothActionBarMsg);
-                    if (!isSoloAction()) sendActionBarMsg(target, completeBothActionBarMsg);
-
-                    if (!isSoloAction()) target.sendTitle(completeTargetTitle, completeTargetSubtitle, 0, 75, 15);
                     player.sendTitle(completePlayerTitle, completePlayerSubtitle, 0, 75, 15);
-
+                    if (!isSoloAction()) sendActionBarMsg(target, completeBothActionBarMsg);
+                    if (!isSoloAction()) target.sendTitle(completeTargetTitle, completeTargetSubtitle, 0, 75, 15);
                     cancel();
                     return;
                 }
@@ -227,6 +229,7 @@ public class CountDownAction {
     protected Player getPlayer() {return player;}
     protected Player getTarget() {return target;}
     protected ItemStack getLaunchItem() {return launchItem;}
+    protected Location getStartLocation() {return startLocation;}
     protected int getTicksLeft() {return ticksLeft;}
     protected ProgressBar getProgressBar() {return pb;}
 }
