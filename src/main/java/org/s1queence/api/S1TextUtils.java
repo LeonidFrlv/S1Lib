@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.s1queence.api.S1Booleans.isLuck;
+
 public class S1TextUtils {
 
     public static String getConvertedTextFromConfig(@NotNull YamlDocument textConfig, @NotNull String path, @NotNull String pluginName) {
@@ -137,16 +139,10 @@ public class S1TextUtils {
         return (int) (Math.random() * ++max) + min;
     }
 
-    private static boolean getIsReceived(double chance) {
-        if (chance >= 100.0d) return true;
-
-        return (1 + Math.random() * 100) <= chance;
-    }
-
     @SuppressWarnings("unchecked")
     public static ItemStack createItemFromMapWithChanceAndRandomAmount(Map<String, Object> mappedItem) {
         double dropChance = (double) mappedItem.get("drop_chance");
-        if (!getIsReceived(dropChance)) return null;
+        if (!isLuck(dropChance)) return null;
 
         Map<String, Object> minMax = ((Section) mappedItem.get("amount")).getStringRouteMappedValues(true);
         int min = (Integer)minMax.get("min");
