@@ -141,8 +141,10 @@ public class S1TextUtils {
 
     @SuppressWarnings("unchecked")
     public static ItemStack createItemFromMapWithChanceAndRandomAmount(Map<String, Object> mappedItem) {
-        double dropChance = (double) mappedItem.get("drop_chance");
-        if (!isLuck(dropChance)) return null;
+        Object dropChance = mappedItem.get("drop_chance");
+        if (dropChance instanceof Integer) {
+            if (!isLuck((double)dropChance)) return null;
+        }
 
         Map<String, Object> minMax = ((Section) mappedItem.get("amount")).getStringRouteMappedValues(true);
         int min = (Integer)minMax.get("min");
