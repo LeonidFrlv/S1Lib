@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Optional.ofNullable;
 import static org.s1queence.api.S1Booleans.isLuck;
 
 public class S1TextUtils {
@@ -108,9 +109,9 @@ public class S1TextUtils {
         Material material = Material.getMaterial(mappedItem.get("material").toString().toUpperCase());
         if (material == null) return null;
 
-        int amount = 1;
-        if (mappedItem.get("amount") != null && mappedItem.get("amount") instanceof Integer) amount = (int) mappedItem.get("amount");
-        ItemStack is = new ItemStack(material, amount);
+        Object amount = mappedItem.get("amount") instanceof Integer ? mappedItem.get("amount") : 1;
+        if ((int)amount != 1) amount = Math.min(Math.max((int)amount, 1), material.getMaxStackSize());
+        ItemStack is = new ItemStack(material, (int)amount);
 
         ItemMeta im = is.getItemMeta();
 
@@ -120,7 +121,7 @@ public class S1TextUtils {
         if (isItemPropertyNonDefaultOrNull(name)) im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 
         Object cmd = mappedItem.get("cmd");
-        if (isItemPropertyNonDefaultOrNull(cmd) && cmd instanceof String) im.setCustomModelData(Integer.parseInt((String)cmd));
+        if (isItemPropertyNonDefaultOrNull(cmd) && cmd instanceof Integer) im.setCustomModelData((int)cmd);
         Object configLore = mappedItem.get("lore");
         if (isItemPropertyNonDefaultOrNull(configLore)) {
             List<String> lore = new ArrayList<>();
@@ -135,6 +136,7 @@ public class S1TextUtils {
     }
 
     private static int getAmount(int min, int max) {
+        if (min > max) return 1;
         max -= min;
         return (int) (Math.random() * ++max) + min;
     }
@@ -142,20 +144,30 @@ public class S1TextUtils {
     @SuppressWarnings("unchecked")
     public static ItemStack createItemFromMapWithChanceAndRandomAmount(Map<String, Object> mappedItem) {
         Object dropChance = mappedItem.get("drop_chance");
-        if (dropChance instanceof Integer) {
+        if (dropChance instanceof Double) {
             if (!isLuck((double)dropChance)) return null;
         }
-
-        Map<String, Object> minMax = ((Section) mappedItem.get("amount")).getStringRouteMappedValues(true);
-        int min = (Integer)minMax.get("min");
-        int max = (Integer)minMax.get("max");
-        int amount = getAmount(min, max);
 
         if (mappedItem.get("material") == null) return null;
         Material material = Material.getMaterial(mappedItem.get("material").toString().toUpperCase());
         if (material == null) return null;
 
-        ItemStack is = new ItemStack(material, amount);
+        Object amountValue = mappedItem.get("amount");
+        Object amount = amountValue instanceof Integer || amountValue instanceof Section ? amountValue : 1;
+        if (amount instanceof Section) {
+            Map<String, Object> minMax = ((Section) mappedItem.get("amount")).getStringRouteMappedValues(true);
+            Object min = minMax.get("min");
+            Object max = minMax.get("max");
+            if (min instanceof Integer && max instanceof Integer) {
+                amount = getAmount((int)min, (int)max);
+            } else {
+                amount = 1;
+            }
+        }
+
+        if ((int)amount != 1) amount = Math.min(Math.max((int)amount, 1), material.getMaxStackSize());
+
+        ItemStack is = new ItemStack(material, (int)amount);
 
         ItemMeta im = is.getItemMeta();
 
@@ -165,7 +177,7 @@ public class S1TextUtils {
         if (isItemPropertyNonDefaultOrNull(name)) im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 
         Object cmd = mappedItem.get("cmd");
-        if (isItemPropertyNonDefaultOrNull(cmd) && cmd instanceof String) im.setCustomModelData(Integer.parseInt((String)cmd));
+        if (isItemPropertyNonDefaultOrNull(cmd) && cmd instanceof Integer) im.setCustomModelData((int)cmd);
 
         Object configLore = mappedItem.get("lore");
         if (isItemPropertyNonDefaultOrNull(configLore)) {
