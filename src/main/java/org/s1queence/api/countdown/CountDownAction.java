@@ -17,7 +17,7 @@ import static org.s1queence.api.S1TextUtils.getTextWithInsertedPlayerName;
 import static org.s1queence.api.S1Utils.sendActionBarMsg;
 
 public class CountDownAction {
-    public static final float CDA_WALK_SPEED = 0.04013135F;
+    public static final float CDA_WALK_SPEED = 0.03432F;
     private final Player player;
     private final Location startLocation;
     private final Player target;
@@ -154,8 +154,8 @@ public class CountDownAction {
     }
 
     protected void reducePlayersWalkSpeed() {
-        if (initialPlayerSpeed > CDA_WALK_SPEED) player.setWalkSpeed(CDA_WALK_SPEED);
-        if (initialTargetSpeed > CDA_WALK_SPEED && !isSoloAction()) target.setWalkSpeed(CDA_WALK_SPEED);
+        if (player.getWalkSpeed() > CDA_WALK_SPEED) player.setWalkSpeed(CDA_WALK_SPEED);
+        if (target.getWalkSpeed() > CDA_WALK_SPEED && !isSoloAction()) target.setWalkSpeed(CDA_WALK_SPEED);
     }
 
     protected boolean isActionCanceled() {
@@ -181,7 +181,6 @@ public class CountDownAction {
     protected void actionCountDown() {
         if (isPlayerInCountDownAction(player) || isPlayerInCountDownAction(target)) return;
 
-        reducePlayersWalkSpeed();
         PreprocessActionHandlers.put(player, target);
 
         final float ACTION_TIME = seconds * 20;
@@ -222,6 +221,7 @@ public class CountDownAction {
                 if (!isSoloAction()) sendActionBarMsg(target, getTextWithInsertedProgressBar(everyTickBothActionBarMsg, stringedBar, percent));
                 player.sendTitle(getTextWithInsertedProgressBar(everyTickPlayerTitle, stringedBar, percent), getTextWithInsertedProgressBar(everyTickPlayerSubtitle, stringedBar, percent), 0, 20, 0);
                 if (!isSoloAction()) target.sendTitle(getTextWithInsertedProgressBar(everyTickTargetTitle, stringedBar, percent), getTextWithInsertedProgressBar(everyTickTargetSubtitle, stringedBar, percent), 0, 20, 0);
+                reducePlayersWalkSpeed();
             }
         }.runTaskTimer(plugin, 0, 1);
     }
