@@ -3,9 +3,12 @@ package org.s1queence.api;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
@@ -50,5 +53,36 @@ public class S1Utils {
 
     public static Location toCenterLocation(Location loc) {
         return new Location(loc.getWorld(), loc.getBlockX() + 0.5D, loc.getBlockY(), loc.getBlockZ() + 0.5D);
+    }
+
+
+    public static void removeItemFromPlayerInventory(Player player, ItemStack item) {
+        PlayerInventory inventory = player.getInventory();
+        for (int i = 0; i < 40; i++) {
+            ItemStack current = inventory.getItem(i);
+            if (current == null) continue;
+            if (current.equals(item)) {
+                inventory.setItem(i, null);
+                return;
+            }
+        }
+    }
+
+    public static void setItemDamage(ItemStack item, Player owner, int damage) {
+        ItemMeta im = item.getItemMeta();
+        int maxDurability = item.getType().getMaxDurability();
+        if (!(im instanceof Damageable) || maxDurability == 0) return;
+        Damageable dIM = (Damageable) im;
+        int finalDamage = dIM.getDamage() + damage;
+        if (maxDurability - finalDamage <= 0) {
+            World world = owner.getWorld();
+            Location loc = owner.getLocation();
+            removeItemFromPlayerInventory(owner, item);
+            world.playSound(loc, Sound.ENTITY_ITEM_BREAK, 5.0f, 1.0f);
+            world.spawnParticle(Particle.ITEM_CRACK, loc, 10, 0.3, 0.5, 0.3, 0, item);
+            return;
+        }
+        dIM.setDamage(finalDamage);
+        item.setItemMeta(dIM);
     }
 }
