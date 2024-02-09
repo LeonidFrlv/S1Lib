@@ -47,6 +47,7 @@ public class CountDownAction {
     private String cancelTargetSubtitle;
     private final int seconds;
     private final ProgressBar pb;
+    private boolean preprocessActionComplete = false;
 
     public CountDownAction(
             @NotNull Player player,
@@ -167,11 +168,15 @@ public class CountDownAction {
         boolean isDead = player.isDead() || target.isDead();
         boolean isLeaveFromStartLocation = !(new Location(player.getWorld(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()).equals(startLocation));
 
-        return isSneaking || !isLaunchItemInitial || !isTargetNearby || !isInAction || !isOnline || isDead || isLeaveFromStartLocation;
+        return (isSneaking || !isLaunchItemInitial || !isTargetNearby || !isInAction || !isOnline || isDead || isLeaveFromStartLocation) && !preprocessActionComplete;
     }
 
     protected String getTextWithInsertedProgressBar(String toInsert, String pb, String percent) {
         return ChatColor.translateAlternateColorCodes('&', toInsert.replace("%progress_bar%", pb).replace("%percent%", percent));
+    }
+
+    protected boolean isPreprocessActionComplete() {
+        return preprocessActionComplete;
     }
 
     protected boolean isSoloAction() {
@@ -195,6 +200,7 @@ public class CountDownAction {
                 }
 
                 if (currentTicks == 0) {
+                    preprocessActionComplete = true;
                     PreprocessActionHandlers.remove(player);
                     if (isDoubleRunnableAction) DoubleRunnableActionHandlers.put(player, target);
                     sendActionBarMsg(player, completeBothActionBarMsg);
