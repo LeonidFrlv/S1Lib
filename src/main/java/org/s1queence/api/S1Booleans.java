@@ -5,6 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import static org.s1queence.S1queenceLib.getLib;
+import static org.s1queence.api.S1Utils.sendActionBarMsg;
 
 public class S1Booleans {
     private static boolean checkIfFar(Player player, Location targetLocation) {
@@ -21,17 +22,17 @@ public class S1Booleans {
 
     public static boolean isNotAllowableInteraction(Player player, Location targetLocation) {
         if (!((Entity) player).isOnGround() && !player.isInWater()) {
-            player.sendMessage(getLib().getTextConfig().getString("interact.on_air"));
+            sendActionBarMsg(player, getLib().getTextConfig().getString("interact.on_air"));
             return true;
         }
 
         if (checkIfFar(player, targetLocation)) {
-            player.sendMessage(getLib().getTextConfig().getString("interact.too_far"));
+            sendActionBarMsg(player, getLib().getTextConfig().getString("interact.too_far"));
             return true;
         }
 
         if (player.isInsideVehicle()) {
-            player.sendMessage(getLib().getTextConfig().getString("interact.from_vehicle"));
+            sendActionBarMsg(player, getLib().getTextConfig().getString("interact.from_vehicle"));
             return true;
         }
 
