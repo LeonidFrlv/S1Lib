@@ -22,20 +22,20 @@ public class S1Booleans {
     public static boolean isNotAllowableInteraction(Player player, Location targetLocation) {
         if (!((Entity) player).isOnGround() && !player.isInWater()) {
             player.sendMessage(getLib().getTextConfig().getString("interact.on_air"));
-            return false;
+            return true;
         }
 
         if (checkIfFar(player, targetLocation)) {
             player.sendMessage(getLib().getTextConfig().getString("interact.too_far"));
-            return false;
+            return true;
         }
 
         if (player.isInsideVehicle()) {
             player.sendMessage(getLib().getTextConfig().getString("interact.from_vehicle"));
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public static boolean isLuck(double chance) {
