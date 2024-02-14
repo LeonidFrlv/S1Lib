@@ -1,5 +1,6 @@
 package org.s1queence.api;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,6 +22,8 @@ public class S1Booleans {
     }
 
     public static boolean isNotAllowableInteraction(Player player, Location targetLocation) {
+        if (player.getGameMode().equals(GameMode.CREATIVE)) return false;
+
         if (!((Entity) player).isOnGround() && !player.isInWater()) {
             sendActionBarMsg(player, getLib().getTextConfig().getString("interact.on_air"));
             return true;
