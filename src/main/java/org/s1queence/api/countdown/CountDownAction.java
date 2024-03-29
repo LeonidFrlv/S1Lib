@@ -110,6 +110,52 @@ public class CountDownAction {
         this.cancelPlayerSubtitle = getTextWithInsertedPlayerName(cancelPlayerSubtitle, tName);
     }
 
+    public CountDownAction(
+            @NotNull Player player,
+            int seconds,
+            boolean isDoubleRunnableAction,
+            boolean isClosePlayersInventoriesEveryTick,
+            @NotNull ProgressBar pb,
+            @NotNull JavaPlugin plugin,
+
+            @NotNull String everyTickBothActionBarMsg,
+            @NotNull String everyTickPlayerTitle,
+            @NotNull String everyTickPlayerSubtitle,
+
+            @NotNull String completeBothActionBarMsg,
+            @NotNull String completePlayerTitle,
+            @NotNull String completePlayerSubtitle,
+
+            @NotNull String cancelBothActionBarMsg,
+            @NotNull String cancelPlayerTitle,
+            @NotNull String cancelPlayerSubtitle
+    )
+    {
+        this.player = player;
+        this.target = player;
+        this.seconds = seconds;
+        this.pb = pb;
+        this.isDoubleRunnableAction = isDoubleRunnableAction;
+        this.isClosePlayersInventoriesEveryTick = isClosePlayersInventoriesEveryTick;
+        this.plugin = plugin;
+        this.startLocation = new Location(player.getWorld(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
+        this.launchItem = player.getInventory().getItemInMainHand();
+        this.initialPlayerSpeed = player.getWalkSpeed();
+        this.initialTargetSpeed = target.getWalkSpeed();
+
+        this.everyTickBothActionBarMsg = everyTickBothActionBarMsg;
+        this.completeBothActionBarMsg = completeBothActionBarMsg;
+        this.cancelBothActionBarMsg = cancelBothActionBarMsg;
+
+        String tName = target.getName();
+        this.everyTickPlayerTitle = getTextWithInsertedPlayerName(everyTickPlayerTitle, tName);
+        this.everyTickPlayerSubtitle = getTextWithInsertedPlayerName(everyTickPlayerSubtitle, tName);
+        this.completePlayerTitle = getTextWithInsertedPlayerName(completePlayerTitle, tName);
+        this.completePlayerSubtitle = getTextWithInsertedPlayerName(completePlayerSubtitle, tName);
+        this.cancelPlayerTitle = getTextWithInsertedPlayerName(cancelPlayerTitle, tName);
+        this.cancelPlayerSubtitle = getTextWithInsertedPlayerName(cancelPlayerSubtitle, tName);
+    }
+
     public static Map<Player, Player> getPreprocessActionHandlers() {
         return PreprocessActionHandlers;
     }
