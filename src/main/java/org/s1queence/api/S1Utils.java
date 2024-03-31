@@ -68,6 +68,12 @@ public class S1Utils {
         }
     }
 
+    public static ItemStack decreaseItemAmount(ItemStack item) {
+        if (item == null || item.getType().equals(Material.AIR)) return null;
+        item.setAmount(item.getAmount() - 1);
+        return item;
+    }
+
     public static void setItemDamage(ItemStack item, Player owner, int damage) {
         ItemMeta im = item.getItemMeta();
         int maxDurability = item.getType().getMaxDurability();
