@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import static org.s1queence.S1queenceLib.getLib;
 import static org.s1queence.api.S1Utils.sendActionBarMsg;
@@ -40,6 +41,13 @@ public class S1Booleans {
         }
 
         return false;
+    }
+
+    public static boolean isTool(ItemStack item) {
+        if (item == null || !item.getType().isItem()) return false;
+        String type = item.getType().toString();
+
+        return type.contains("AXE") || type.contains("SHOVEL") || type.contains("HOE");
     }
 
     public static boolean isLuck(double chance) {
