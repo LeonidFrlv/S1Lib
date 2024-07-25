@@ -84,7 +84,7 @@ public class S1Utils {
             World world = owner.getWorld();
             Location loc = owner.getLocation();
             removeItemFromPlayerInventory(owner, item);
-            world.playSound(loc, Sound.ENTITY_ITEM_BREAK, 5.0f, 1.0f);
+            world.playSound(loc, Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
             world.spawnParticle(Particle.ITEM_CRACK, loc, 10, 0.3, 0.5, 0.3, 0, item);
             return;
         }
