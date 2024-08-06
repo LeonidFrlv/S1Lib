@@ -208,7 +208,7 @@ public class CountDownAction {
     protected boolean isActionCanceled() {
         boolean isSneaking = player.isSneaking() || target.isSneaking();
         boolean isLaunchItemInitial = player.getInventory().getItemInMainHand().equals(launchItem);
-        boolean isTargetNearby = player.getNearbyEntities(1.65f, 0.5f, 1.65f).contains(target);
+        boolean isTargetNearby = isSoloAction() || player.getNearbyEntities(1.65f, 0.5f, 1.65f).contains(target);
         boolean isInAction = isPlayerInCountDownAction(player) || isPlayerInCountDownAction(target);
         boolean isOnline = player.isOnline() || target.isOnline();
         boolean isDead = player.isDead() || target.isDead();
