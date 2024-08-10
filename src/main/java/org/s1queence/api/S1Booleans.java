@@ -23,7 +23,7 @@ public class S1Booleans {
     }
 
     public static boolean isNotAllowableInteraction(Player player, Location targetLocation) {
-        if (player.getGameMode().equals(GameMode.CREATIVE)) return false;
+        if (player.getGameMode().equals(GameMode.CREATIVE) || player.isClimbing()) return false;
 
         if (!((Entity) player).isOnGround() && !player.isInWater()) {
             sendActionBarMsg(player, getLib().getTextConfig().getString("interact.on_air"));
