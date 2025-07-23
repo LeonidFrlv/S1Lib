@@ -1,6 +1,7 @@
 package org.s1queence.api;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,13 +10,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.s1queence.plugin.libs.block.implementation.Section;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Optional.ofNullable;
 import static org.s1queence.api.S1Booleans.isLuck;
 
 public class S1TextUtils {
@@ -43,6 +42,10 @@ public class S1TextUtils {
         }
 
         return buffer.toString();
+    }
+
+    public static String getExactStringLocation(String delimiter, Location loc) {
+        return String.join(delimiter, String.valueOf(loc.getX()), String.valueOf(loc.getBlockY()), String.valueOf(loc.getBlockZ()));
     }
 
     public static String getStringLocation(String delimiter, Location loc) {
@@ -191,6 +194,4 @@ public class S1TextUtils {
         is.setItemMeta(im);
         return is;
     }
-
-
 }

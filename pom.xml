@@ -6,7 +6,7 @@
 
     <groupId>org.s1queence</groupId>
     <artifactId>S1queenceLib</artifactId>
-    <version>1.0</version>
+    <version>1.0-1.21.1</version>
     <packaging>jar</packaging>
 
     <name>S1queenceLib</name>
@@ -22,6 +22,11 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
@@ -31,20 +36,19 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <version>1.21.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api-plugin</artifactId>
+            <version>2.15.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>dev.dejvokep</groupId>
             <artifactId>boosted-yaml-spigot</artifactId>
             <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.s1queence.lib</groupId>
-            <artifactId>s1queencelib</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/Denis/Desktop/TestServer/plugins/S1queenceLib-1.0.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -88,8 +92,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <outputDirectory>C:\Users\Denis\Desktop\TestServer\plugins\</outputDirectory>
-                    <!-- your outputDirectory -->
+                    <outputDirectory>C:\Users\Leonid\Desktop\121testserver\plugins</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

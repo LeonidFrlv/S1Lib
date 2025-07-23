@@ -2,6 +2,8 @@ package org.s1queence;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.s1queence.api.logic_item.LogicItemManager;
+import org.s1queence.api.logic_item.ui_inventory_panel.UIPanelItemClickEventCaller;
 import org.s1queence.commands.LibCommand;
 import org.s1queence.listeners.DebugListener;
 
@@ -15,6 +17,8 @@ import static org.s1queence.api.S1TextUtils.getConvertedTextFromConfig;
 public class S1queenceLib extends JavaPlugin {
     private YamlDocument textConfig;
     private static S1queenceLib lib;
+
+    public static LogicItemManager logicItemManager;
 
     @Override
     public void onEnable() {
@@ -31,7 +35,10 @@ public class S1queenceLib extends JavaPlugin {
         lib = this;
         Objects.requireNonNull(getServer().getPluginCommand("s1lib")).setExecutor(new LibCommand(this));
 
+        logicItemManager = new LogicItemManager();
+
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
+        getServer().getPluginManager().registerEvents(new UIPanelItemClickEventCaller(), this);
     }
 
     @Override

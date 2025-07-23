@@ -1,7 +1,9 @@
 name: S1queenceLib
 version: '${project.version}'
-api-version: '1.18'
+api-version: '1.21'
 main: org.s1queence.S1queenceLib
+depend:
+  - NBTAPI
 commands:
   s1lib:
     usage: /s1lib <action>
