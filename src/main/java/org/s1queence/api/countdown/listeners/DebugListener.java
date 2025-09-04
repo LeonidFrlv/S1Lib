@@ -1,4 +1,4 @@
-package org.s1queence.listeners;
+package org.s1queence.api.countdown.listeners;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

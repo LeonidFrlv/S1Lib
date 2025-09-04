@@ -45,7 +45,7 @@ public class S1TextUtils {
     }
 
     public static String getExactStringLocation(String delimiter, Location loc) {
-        return String.join(delimiter, String.valueOf(loc.getX()), String.valueOf(loc.getBlockY()), String.valueOf(loc.getBlockZ()));
+        return String.join(delimiter, String.valueOf(loc.getX()), String.valueOf(loc.getY()), String.valueOf(loc.getZ()));
     }
 
     public static String getStringLocation(String delimiter, Location loc) {

@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.s1queence.S1queenceLib;
+import org.s1queence.api.interactive_display.InteractiveDisplayManager;
 
 import java.io.File;
 import java.util.Objects;
@@ -26,11 +27,8 @@ public class LibCommand implements CommandExecutor {
         if (!args[0].equalsIgnoreCase("reload")) return false;
         plugin.setLib(plugin);
         try {
-            File commandOptionsCfgFile = new File(plugin.getDataFolder(), "commands.options.yml");
             File textCfgFile = new File(plugin.getDataFolder(), "text.yml");
-
             if (!textCfgFile.exists()) plugin.setTextConfig(YamlDocument.create(new File(plugin.getDataFolder(), "text.yml"), Objects.requireNonNull(plugin.getResource("text.yml"))));
-
             plugin.getTextConfig().reload();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -39,7 +37,7 @@ public class LibCommand implements CommandExecutor {
         getPreprocessActionHandlers().clear();
         getDoubleRunnableActionHandlers().clear();
 
-
+        S1queenceLib.interactiveDisplayManager = new InteractiveDisplayManager();
 
         String reloadMsg = getConvertedTextFromConfig(plugin.getTextConfig(), "onReload_msg", plugin.getName());
         if (sender instanceof Player) sender.sendMessage(reloadMsg);

@@ -2,10 +2,13 @@ package org.s1queence;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.s1queence.api.interactive_display.InteractiveDisplayManager;
+import org.s1queence.api.interactive_display.interact_event.DisplayInteractEventCaller;
+import org.s1queence.api.interactive_display.listeners.InteractiveDisplayRemoveListener;
 import org.s1queence.api.logic_item.LogicItemManager;
 import org.s1queence.api.logic_item.ui_inventory_panel.UIPanelItemClickEventCaller;
 import org.s1queence.commands.LibCommand;
-import org.s1queence.listeners.DebugListener;
+import org.s1queence.api.countdown.listeners.DebugListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,28 +19,27 @@ import static org.s1queence.api.S1TextUtils.getConvertedTextFromConfig;
 
 public class S1queenceLib extends JavaPlugin {
     private YamlDocument textConfig;
-    private static S1queenceLib lib;
-
+    public static S1queenceLib lib;
+    public static InteractiveDisplayManager interactiveDisplayManager;
     public static LogicItemManager logicItemManager;
 
     @Override
     public void onEnable() {
-        saveResource("README.txt", true);
-
         try {
             textConfig = YamlDocument.create(new File(getDataFolder(), "text.yml"), Objects.requireNonNull(getResource("text.yml")));
-        } catch (IOException ignored) {
+        } catch (IOException ignored) {}
 
-        }
         consoleLog(getConvertedTextFromConfig(textConfig, "onEnable_msg", this.getName()), this);
-
 
         lib = this;
         Objects.requireNonNull(getServer().getPluginCommand("s1lib")).setExecutor(new LibCommand(this));
 
         logicItemManager = new LogicItemManager();
+        interactiveDisplayManager = new InteractiveDisplayManager();
 
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
+        getServer().getPluginManager().registerEvents(new DisplayInteractEventCaller(this), this);
+        getServer().getPluginManager().registerEvents(new InteractiveDisplayRemoveListener(), this);
         getServer().getPluginManager().registerEvents(new UIPanelItemClickEventCaller(), this);
     }
 
@@ -45,6 +47,7 @@ public class S1queenceLib extends JavaPlugin {
     public void onDisable() {
         consoleLog(getConvertedTextFromConfig(textConfig, "onDisable_msg", this.getName()), this);
     }
+
     public static S1queenceLib getLib() {
         return lib;
     }
