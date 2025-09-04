@@ -308,7 +308,7 @@ public class InteractiveDisplayManager {
     }
 
     public void setHitBox(Entity entity, boolean b) {
-        entity.getPersistentDataContainer().set(occupiesAllKey, PersistentDataType.BOOLEAN, b);
+        entity.getPersistentDataContainer().set(displayGridHitBoxKey, PersistentDataType.BOOLEAN, b);
     }
 
     public GridType getGridType(Entity entity) {
