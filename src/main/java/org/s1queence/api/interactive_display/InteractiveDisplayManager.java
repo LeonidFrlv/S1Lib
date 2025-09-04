@@ -238,6 +238,7 @@ public class InteractiveDisplayManager {
         if (item == null) return false;
 
         pInv.setItemInMainHand(item);
+        removeDisplay(toPickup, false, true);
         return true;
     }
 
