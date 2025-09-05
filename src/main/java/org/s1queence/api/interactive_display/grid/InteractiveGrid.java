@@ -14,49 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 public class InteractiveGrid {
-
-//    private final int[][] gridExample16 = new int[][] {
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-//    };
-
-//    private final int[][] gridExample8 = new int[][] {
-//            {0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0}
-//    };
-
-//    private final int[][] gridExample4 = new int[][] {
-//            {0, 0, 0, 0},
-//            {0, 0, 0, 0},
-//            {0, 0, 0, 0},
-//            {0, 0, 0, 0}
-//    };
-
-//    private final int[][] gridExample2 = new int[][] {
-//            {0, 0},
-//            {0, 0}
-//    };
-
     private final InteractiveDisplayManager manager;
     private final BlockFace facing;
     private final Block block;
@@ -94,8 +51,6 @@ public class InteractiveGrid {
                     interactions.add(spawnInteraction(h, v, templateGrid));
                 }
             }
-
-
         }
 
         return buffer;
@@ -116,21 +71,6 @@ public class InteractiveGrid {
 
         return interaction;
     }
-
-//    private Location getSquareInteractionSpawnLocation(int h, int v, TemplateGrid grid) {
-//        World world = block.getWorld();
-//
-//        final float width = grid.getCellWidth();
-//        final int x = block.getX();
-//        final int y = block.getY();
-//        final int z = block.getZ();
-//
-//        double spawnX = getSpawnCoordinate(v, x, width) + grid.getXTranslation();
-//        double spawnY = 1 + y + (width / 2) + width + grid.getYTranslation(); // мб тут баги какие. Типа зачем делить на 2? Проверим
-//        double spawnZ = getSpawnCoordinate(h, z, width) + grid.getZTranslation();
-//
-//        return new Location(world, spawnX, spawnY, spawnZ);
-//    }
 
     private Location getSquareInteractionSpawnLocation(int h, int v, TemplateGrid grid) {
         World world = block.getWorld();
@@ -177,31 +117,50 @@ public class InteractiveGrid {
         double spawnY = 1 + y + grid.getYTranslation() + 0.001;
         double spawnZ = getSpawnCoordinate(rotatedZ, z, width);
 
-        switch (facing) {
-            case NORTH: {
-                spawnX += zTranslation;
-                spawnZ -= xTranslation;
-                break;
-            }
+        GridSize gridSize = grid.getGridSize();
+        if (gridSize.equals(GridSize.X1x1)) {
+            switch (facing) {
+                case NORTH: case SOUTH: {
+                    spawnX -= zTranslation;
+                    spawnZ += xTranslation;
+                    break;
+                }
 
-            case SOUTH: {
-                spawnX -= zTranslation;
-                spawnZ += xTranslation;
-                break;
+                case EAST: case WEST: {
+                    spawnX += xTranslation;
+                    spawnZ -= zTranslation;
+                    break;
+                }
             }
+        } else {
+            switch (facing) {
+                case NORTH: {
+                    spawnX += zTranslation;
+                    spawnZ -= xTranslation;
+                    break;
+                }
 
-            case EAST: {
-                spawnX += xTranslation;
-                spawnZ += zTranslation;
-                break;
-            }
+                case SOUTH: {
+                    spawnX -= zTranslation;
+                    spawnZ += xTranslation;
+                    break;
+                }
 
-            case WEST: {
-                spawnX -= xTranslation;
-                spawnZ -= zTranslation;
-                break;
+                case EAST: {
+                    spawnX += xTranslation;
+                    spawnZ += zTranslation;
+                    break;
+                }
+
+                case WEST: {
+                    spawnX -= xTranslation;
+                    spawnZ -= zTranslation;
+                    break;
+                }
             }
         }
+
+
 
         return new Location(world, spawnX, spawnY, spawnZ);
     }

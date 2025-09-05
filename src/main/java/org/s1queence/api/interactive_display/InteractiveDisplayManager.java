@@ -8,6 +8,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Transformation;
 import org.s1queence.api.interactive_display.grid.GridType;
 import org.s1queence.api.interactive_display.grid.InteractiveGrid;
 
@@ -242,6 +243,43 @@ public class InteractiveDisplayManager {
         return true;
     }
 
+    public boolean placeItemToHolder(Player player, Entity itemHolder, Transformation transformation) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType().equals(Material.AIR)) return false;
+
+        if (!getGridType(itemHolder).equals(GridType.ENTITY_HOLDER) || !itemHolder.getPassengers().isEmpty()) return false;
+
+        ItemDisplay itemDisplay = (ItemDisplay) itemHolder.getWorld().spawnEntity(itemHolder.getLocation(), EntityType.ITEM_DISPLAY);
+        itemHolder.addPassenger(itemDisplay);
+        itemDisplay.setTransformation(transformation);
+        setRotationFromFacing(player.getFacing(), itemDisplay);
+        itemDisplay.setItemStack(item);
+        if (!player.getGameMode().equals(GameMode.CREATIVE)) item.setAmount(item.getAmount() - 1);
+
+        return true;
+    }
+
+    public boolean takeOrSwapItemWithHolder(Player player, Entity itemHolder) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+
+        List<Entity> passengers = itemHolder.getPassengers();
+        if (!getGridType(itemHolder).equals(GridType.ENTITY_HOLDER) || passengers.isEmpty()) return false;
+
+        Entity entity = passengers.get(0);
+        if (!(entity instanceof ItemDisplay)) return false;
+
+        ItemDisplay itemDisplay = (ItemDisplay) entity;
+
+        if (itemDisplay.getItemStack() != null) player.getInventory().setItemInMainHand(itemDisplay.getItemStack());
+
+        if (item.getType().equals(Material.AIR)) {
+            itemDisplay.remove();
+            return true;
+        }
+
+        itemDisplay.setItemStack(item);
+        return true;
+    }
 
 
     // rotateDisplay(InteractiveDisplay toRotate, BlockFace facing) - поворачиваться должны и grids тоже
