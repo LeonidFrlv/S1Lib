@@ -253,31 +253,73 @@ public class InteractiveDisplayManager {
         itemHolder.addPassenger(itemDisplay);
         itemDisplay.setTransformation(transformation);
         setRotationFromFacing(player.getFacing(), itemDisplay);
-        itemDisplay.setItemStack(item);
+
+        ItemStack toPlace = item.clone();
+        toPlace.setAmount(1);
+        itemDisplay.setItemStack(toPlace);
+
         if (!player.getGameMode().equals(GameMode.CREATIVE)) item.setAmount(item.getAmount() - 1);
 
         return true;
     }
 
-    public boolean takeOrSwapItemWithHolder(Player player, Entity itemHolder) {
-        ItemStack item = player.getInventory().getItemInMainHand();
-
-        List<Entity> passengers = itemHolder.getPassengers();
-        if (!getGridType(itemHolder).equals(GridType.ENTITY_HOLDER) || passengers.isEmpty()) return false;
+    private ItemDisplay getItemEntity(Entity from) {
+        List<Entity> passengers = from.getPassengers();
+        if (!getGridType(from).equals(GridType.ENTITY_HOLDER) || passengers.isEmpty()) return null;
 
         Entity entity = passengers.get(0);
-        if (!(entity instanceof ItemDisplay)) return false;
+        if (!(entity instanceof ItemDisplay)) return null;
 
-        ItemDisplay itemDisplay = (ItemDisplay) entity;
+        return (ItemDisplay) entity;
+    }
 
-        if (itemDisplay.getItemStack() != null) player.getInventory().setItemInMainHand(itemDisplay.getItemStack());
+    public boolean takeItemFromHolder(Player player, Entity itemHolder) {
+        ItemDisplay itemDisplay = getItemEntity(itemHolder);
+        if (itemDisplay == null) return false;
 
-        if (item.getType().equals(Material.AIR)) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemStack itemFromDisplay = itemDisplay.getItemStack();
+
+        if (itemFromDisplay == null) {
             itemDisplay.remove();
-            return true;
+            return false;
         }
 
-        itemDisplay.setItemStack(item);
+        if (itemFromDisplay.isSimilar(item)) {
+            if (item.getAmount() != item.getMaxStackSize()) {
+                item.setAmount(item.getAmount() + 1);
+            } else {
+                return false;
+            }
+        }
+
+        if (item.getType().equals(Material.AIR)) player.getInventory().setItemInMainHand(itemFromDisplay);
+
+        itemDisplay.remove();
+
+        return true;
+    }
+
+
+    public boolean swapItemWithHolder(Player player, Entity itemHolder, Transformation transformation) {
+        ItemDisplay itemDisplay = getItemEntity(itemHolder);
+        if (itemDisplay == null) return false;
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemStack itemFromDisplay = itemDisplay.getItemStack();
+
+        if (itemFromDisplay == null) {
+            itemDisplay.remove();
+            return false;
+        }
+
+        if (item.getType().equals(Material.AIR) || itemFromDisplay.isSimilar(item) || item.getAmount() != 1) return false;
+
+        ItemStack clone = itemFromDisplay.clone();
+        itemDisplay.remove();
+        placeItemToHolder(player, itemHolder, transformation);
+        player.getInventory().setItemInMainHand(clone);
+
         return true;
     }
 
