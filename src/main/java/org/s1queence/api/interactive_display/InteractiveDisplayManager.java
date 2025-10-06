@@ -97,7 +97,9 @@ public class InteractiveDisplayManager {
         if (entityType.equals(EntityType.BLOCK_DISPLAY)) {
             ((BlockDisplay)entity).setBlock(Bukkit.createBlockData(item.getType()));
         } else {
-            ((ItemDisplay)entity).setItemStack(item);
+            ItemStack toPlace = item.clone();
+            toPlace.setAmount(1);
+            ((ItemDisplay)entity).setItemStack(toPlace);
         }
 
         if (!player.getGameMode().equals(GameMode.CREATIVE)) item.setAmount(item.getAmount() - 1);
@@ -228,7 +230,7 @@ public class InteractiveDisplayManager {
 
     public boolean pickupDisplay(Player player, InteractiveDisplay toPickup) {
         PlayerInventory pInv = player.getInventory();
-        if (!pInv.getItemInMainHand().getType().equals(Material.AIR)) return false;
+        ItemStack itemInHand = pInv.getItemInMainHand();
 
         Entity entity = toPickup.getEntity();
 
@@ -238,8 +240,19 @@ public class InteractiveDisplayManager {
 
         if (item == null) return false;
 
-        pInv.setItemInMainHand(item);
-        removeDisplay(toPickup, false, true);
+        boolean dropItem = true;
+
+        if (item.isSimilar(itemInHand) && itemInHand.getAmount() != itemInHand.getMaxStackSize()) {
+            itemInHand.setAmount(itemInHand.getAmount() + 1);
+            dropItem = false;
+        }
+
+        if (itemInHand.getType().equals(Material.AIR)) {
+            pInv.setItemInMainHand(item);
+            dropItem = false;
+        }
+
+        removeDisplay(toPickup, dropItem, true);
         return true;
     }
 

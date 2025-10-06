@@ -23,6 +23,7 @@ public class LogicItemListener implements Listener {
         return f == 0.0f ? 1.0f : f;
     }
 
+    @Deprecated
     public void playSoundLocation(String soundPath, Location location) {
         World world = location.getWorld();
         if (world == null) return;

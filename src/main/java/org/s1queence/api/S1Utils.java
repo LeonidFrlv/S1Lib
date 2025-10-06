@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -91,4 +92,16 @@ public class S1Utils {
         dIM.setDamage(finalDamage);
         item.setItemMeta(dIM);
     }
+
+    public static void playSoundLocation(Location location, String sound, float volume, float pitch, double radius) {
+        World world = location.getWorld();
+        if (world == null) return;
+
+        for (Entity entity : world.getNearbyEntities(location, radius, radius, radius)) {
+            if (!(entity instanceof Player)) continue;
+            Player player = (Player) entity;
+            player.playSound(location, sound, volume, pitch);
+        }
+    }
+
 }
