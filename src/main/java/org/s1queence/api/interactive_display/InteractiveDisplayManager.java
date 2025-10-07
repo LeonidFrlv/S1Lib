@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
+import org.jetbrains.annotations.Nullable;
+import org.s1queence.api.interactive_display.events.InteractiveDisplayRemoveEvent;
 import org.s1queence.api.interactive_display.grid.GridType;
 import org.s1queence.api.interactive_display.grid.InteractiveGrid;
 
@@ -26,6 +28,7 @@ public class InteractiveDisplayManager {
     public static final NamespacedKey displayGridNameKey = new NamespacedKey(lib, "s1queence-interactive-display-grid-name");
     public static final NamespacedKey displayGridHitBoxKey = new NamespacedKey(lib, "s1queence-interactive-display-grid-hitBox");
     public static final NamespacedKey displayGridTypeKey = new NamespacedKey(lib, "s1queence-interactive-display-grid-type");
+    public static final NamespacedKey displayUIDRelatedEntityKey = new NamespacedKey(lib, "s1queence-interactive-display-uid-related-entity");
 
     public InteractiveDisplayManager() {
         fill();
@@ -37,8 +40,18 @@ public class InteractiveDisplayManager {
         strLocationsDisplaysMap = new HashMap<>();
         Map<String, Entity> displayEntities = new HashMap<>();
         Map<String, Map<String, List<Interaction>>> displaysGrids = new HashMap<>();
+        Map<String, List<Entity>> displaysRelatedEntities = new HashMap<>();
 
         worlds.forEach(world -> world.getEntities().forEach(entity -> {
+            if (isRelatedEntity(entity)) {
+                String relatedUID = getDisplayRelatedEntityUID(entity);
+                if (relatedUID == null) return;
+                List<Entity> relatedEntities = ofNullable(displaysRelatedEntities.get(relatedUID)).orElse(new ArrayList<>());
+                relatedEntities.add(entity);
+                displaysRelatedEntities.put(relatedUID, relatedEntities);
+                return;
+            }
+
             String uid = getUID(entity);
             if (uid == null) return;
 
@@ -64,29 +77,29 @@ public class InteractiveDisplayManager {
             if (stringedLocation == null || displayType == null) return;
 
             Map<String, InteractiveDisplay> displays = ofNullable(strLocationsDisplaysMap.get(stringedLocation)).orElse(new HashMap<>());
-            displays.put(uid, new InteractiveDisplay(entity, displaysGrids.get(uid)));
+            displays.put(uid, new InteractiveDisplay(entity, displaysGrids.get(uid), displaysRelatedEntities.get(uid)));
             strLocationsDisplaysMap.put(stringedLocation, displays);
         });
 
     }
-
-    public boolean placeDisplayByPlayer(InteractiveDisplayData data, Block block, Player player, double xTranslation, double yTranslation, double zTranslation) {
-        if (data.isOnlyFullSturdyFace() && !block.getBlockData().isFaceSturdy(BlockFace.UP, BlockSupport.FULL)) return false;
+    @Nullable
+    public InteractiveDisplay placeDisplayByPlayer(InteractiveDisplayData data, Block block, Player player, double xTranslation, double yTranslation, double zTranslation) {
+        if (data.isOnlyFullSturdyFace() && !block.getBlockData().isFaceSturdy(BlockFace.UP, BlockSupport.FULL)) return null;
 
         Location blockLocation = block.getLocation().clone();
 
         Map<String, InteractiveDisplay> displays = strLocationsDisplaysMap.get(blockLocation.toString());
 
         if (displays != null && !displays.isEmpty()) {
-            if (data.isOccupiesAll()) return false;
+            if (data.isOccupiesAll()) return null;
             List<InteractiveDisplay> displaysList = new ArrayList<>(displays.values());
-            if (isOccupiesAll(displaysList.get(0))) return false;
+            if (isOccupiesAll(displaysList.get(0))) return null;
         }
 
         ItemStack item = player.getInventory().getItemInMainHand();
 
         EntityType entityType = data.getEntityType();
-        if (entityType.equals(EntityType.BLOCK_DISPLAY) && !item.getType().isBlock()) return false;
+        if (entityType.equals(EntityType.BLOCK_DISPLAY) && !item.getType().isBlock()) return null;
 
         BlockFace facing = player.getFacing();
 
@@ -113,9 +126,10 @@ public class InteractiveDisplayManager {
 
         Map<String, List<Interaction>> grids = new InteractiveGrid(this, facing, block, uid, data.getTemplateGrids()).getGrids();
 
-        registerDisplay(new InteractiveDisplay(entity, grids));
+        InteractiveDisplay interactiveDisplay = new InteractiveDisplay(entity, grids, null);
+        registerDisplay(interactiveDisplay);
 
-        return true;
+        return interactiveDisplay;
     }
 
     public void setRotationFromFacing(BlockFace facing, Entity entity) {
@@ -173,7 +187,7 @@ public class InteractiveDisplayManager {
     }
 
     public void removeFromBlock(Block block) {
-        Map<String, InteractiveDisplay> displays = strLocationsDisplaysMap.get(block.getLocation().toString());
+        Map<String, InteractiveDisplay> displays = getBlockDisplays(block);
         if (displays == null) return;
 
         List<InteractiveDisplay> cloned = new ArrayList<>(displays.values());
@@ -181,7 +195,15 @@ public class InteractiveDisplayManager {
         cloned.forEach(display -> removeDisplay(display, true, true));
     }
 
+    public Map<String, InteractiveDisplay> getBlockDisplays(Block block) {
+        return strLocationsDisplaysMap.get(block.getLocation().toString());
+    }
+
     public void removeDisplay(InteractiveDisplay display, boolean dropEntityItem, boolean dropOtherItems) {
+        InteractiveDisplayRemoveEvent interactiveDisplayRemoveEvent = new InteractiveDisplayRemoveEvent(display);
+        lib.getServer().getPluginManager().callEvent(interactiveDisplayRemoveEvent);
+        if (interactiveDisplayRemoveEvent.isCancelled()) return;
+
         display.getGrids().forEach((name, interactions) -> interactions.forEach(interaction -> {
             List<Entity> passengers = interaction.getPassengers();
 
@@ -199,6 +221,9 @@ public class InteractiveDisplayManager {
             interaction.remove();
 
         }));
+
+        List<Entity> relatedEntities = display.getRelatedEntities();
+        if (relatedEntities != null) relatedEntities.forEach(Entity::remove);
 
         unregisterDisplay(display);
 
@@ -412,6 +437,22 @@ public class InteractiveDisplayManager {
 
     public void setCellGridType(Entity entity, String type) {
         entity.getPersistentDataContainer().set(displayGridTypeKey, PersistentDataType.STRING, type);
+    }
+
+    public boolean isRelatedEntity(Entity entity) {
+        return getDisplayRelatedEntityUID(entity) != null;
+    }
+
+    public String getDisplayRelatedEntityUID(Entity entity) {
+        if (entity == null) return null;
+        return entity.getPersistentDataContainer().get(displayUIDRelatedEntityKey, PersistentDataType.STRING);
+    }
+
+    public void addRelatedEntity(InteractiveDisplay display, Entity toAdd) {
+        if (toAdd == null) return;
+        String displayUID = getUID(display.getEntity());
+        toAdd.getPersistentDataContainer().set(displayUIDRelatedEntityKey, PersistentDataType.STRING, displayUID);
+        display.addRelatedEntity(toAdd);
     }
 
 }
