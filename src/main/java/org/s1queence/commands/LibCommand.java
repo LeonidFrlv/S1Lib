@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.s1queence.S1queenceLib;
-import org.s1queence.api.interactive_display.InteractiveDisplayManager;
 
 import java.io.File;
 import java.util.Objects;
@@ -36,8 +35,6 @@ public class LibCommand implements CommandExecutor {
 
         getPreprocessActionHandlers().clear();
         getDoubleRunnableActionHandlers().clear();
-
-        S1queenceLib.interactiveDisplayManager = new InteractiveDisplayManager();
 
         String reloadMsg = getConvertedTextFromConfig(plugin.getTextConfig(), "onReload_msg", plugin.getName());
         if (sender instanceof Player) sender.sendMessage(reloadMsg);

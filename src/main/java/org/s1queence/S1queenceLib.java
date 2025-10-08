@@ -2,6 +2,7 @@ package org.s1queence;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.s1queence.api.interactive_display.InteractiveDisplayManager;
 import org.s1queence.api.interactive_display.interact_event.DisplayInteractEventCaller;
 import org.s1queence.api.interactive_display.listeners.InteractiveDisplayRemoveListener;
@@ -35,12 +36,21 @@ public class S1queenceLib extends JavaPlugin {
         Objects.requireNonNull(getServer().getPluginCommand("s1lib")).setExecutor(new LibCommand(this));
 
         logicItemManager = new LogicItemManager();
-        interactiveDisplayManager = new InteractiveDisplayManager();
+        setupInteractiveDisplayManagerUpdater();
 
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
         getServer().getPluginManager().registerEvents(new DisplayInteractEventCaller(this), this);
         getServer().getPluginManager().registerEvents(new InteractiveDisplayRemoveListener(), this);
         getServer().getPluginManager().registerEvents(new UIPanelItemClickEventCaller(), this);
+    }
+
+    public void setupInteractiveDisplayManagerUpdater() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                interactiveDisplayManager = new InteractiveDisplayManager();
+            }
+        }.runTaskTimer(this, 0, 60);
     }
 
     @Override
