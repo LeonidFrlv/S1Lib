@@ -219,7 +219,6 @@ public class InteractiveDisplayManager {
             }
 
             interaction.remove();
-
         }));
 
         List<Entity> relatedEntities = display.getRelatedEntities();
