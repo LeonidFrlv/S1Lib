@@ -3,16 +3,16 @@ package org.s1queence;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.s1queence.api.YamlConfigUtil;
 import org.s1queence.api.interactive_display.InteractiveDisplayManager;
 import org.s1queence.api.interactive_display.interact_event.DisplayInteractEventCaller;
 import org.s1queence.api.interactive_display.listeners.InteractiveDisplayRemoveListener;
 import org.s1queence.api.logic_item.LogicItemManager;
 import org.s1queence.api.logic_item.ui_inventory_panel.UIPanelItemClickEventCaller;
+import org.s1queence.api.rpg_skills.SkillsManager;
 import org.s1queence.commands.LibCommand;
 import org.s1queence.api.countdown.listeners.DebugListener;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 import static org.s1queence.api.S1TextUtils.consoleLog;
@@ -20,15 +20,17 @@ import static org.s1queence.api.S1TextUtils.getConvertedTextFromConfig;
 
 public class S1queenceLib extends JavaPlugin {
     private YamlDocument textConfig;
+    private YamlDocument optionsConfig;
     public static S1queenceLib lib;
     public static InteractiveDisplayManager interactiveDisplayManager;
     public static LogicItemManager logicItemManager;
+    public static SkillsManager skillsManager;
 
     @Override
     public void onEnable() {
-        try {
-            textConfig = YamlDocument.create(new File(getDataFolder(), "text.yml"), Objects.requireNonNull(getResource("text.yml")));
-        } catch (IOException ignored) {}
+
+        textConfig = YamlConfigUtil.createConfig("text.yml", this);
+        optionsConfig = YamlConfigUtil.createConfig("options.yml", this);
 
         consoleLog(getConvertedTextFromConfig(textConfig, "onEnable_msg", this.getName()), this);
 
@@ -36,6 +38,9 @@ public class S1queenceLib extends JavaPlugin {
         Objects.requireNonNull(getServer().getPluginCommand("s1lib")).setExecutor(new LibCommand(this));
 
         logicItemManager = new LogicItemManager();
+        skillsManager = new SkillsManager();
+
+
         setupInteractiveDisplayManagerUpdater();
 
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
@@ -61,14 +66,19 @@ public class S1queenceLib extends JavaPlugin {
     public static S1queenceLib getLib() {
         return lib;
     }
-    public void setLib(S1queenceLib newState) {
-        lib = newState;
-    }
 
     public YamlDocument getTextConfig() {
         return textConfig;
     }
     public void setTextConfig(YamlDocument newState) {
         textConfig = newState;
+    }
+
+    public YamlDocument getOptionsConfig() {
+        return optionsConfig;
+    }
+
+    public void setOptionsConfig(YamlDocument optionsConfig) {
+        this.optionsConfig = optionsConfig;
     }
 }

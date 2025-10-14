@@ -1,0 +1,10 @@
+# sound - путь до звука в ресурспаке или майнкрафте
+# volume - громкость (1.0 стандарт)
+# pitch - скорость (1.0 стандарт)
+sounds:
+  experience_gain:
+    sound: "entity.experience_orb.pickup"
+    pitch: 2.0
+  level_increase:
+    sound: "entity.player.levelup"
+    pitch: 1.3

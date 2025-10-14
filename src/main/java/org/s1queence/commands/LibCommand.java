@@ -1,16 +1,14 @@
 package org.s1queence.commands;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.s1queence.S1queenceLib;
+import org.s1queence.api.YamlConfigUtil;
 
-import java.io.File;
-import java.util.Objects;
-
+import static org.s1queence.S1queenceLib.lib;
 import static org.s1queence.api.S1TextUtils.consoleLog;
 import static org.s1queence.api.S1TextUtils.getConvertedTextFromConfig;
 import static org.s1queence.api.countdown.CountDownAction.getDoubleRunnableActionHandlers;
@@ -24,14 +22,8 @@ public class LibCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (args.length != 1) return false;
         if (!args[0].equalsIgnoreCase("reload")) return false;
-        plugin.setLib(plugin);
-        try {
-            File textCfgFile = new File(plugin.getDataFolder(), "text.yml");
-            if (!textCfgFile.exists()) plugin.setTextConfig(YamlDocument.create(new File(plugin.getDataFolder(), "text.yml"), Objects.requireNonNull(plugin.getResource("text.yml"))));
-            plugin.getTextConfig().reload();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        lib.setTextConfig(YamlConfigUtil.reloadConfig(lib.getTextConfig()));
+        lib.setOptionsConfig(YamlConfigUtil.reloadConfig(lib.getOptionsConfig()));
 
         getPreprocessActionHandlers().clear();
         getDoubleRunnableActionHandlers().clear();

@@ -7,6 +7,21 @@ onReload_msg: "%plugin% &aКонфиг был обновлён!"
 no_permission_alert: "&4Нет прав!"
 player_not_found: "&4Игрок не найден!"
 
+# %skill_name% - название навыка
+# %exp% - полученный опыт
+# %level% - полученный уровень (новый)
+skills:
+  level_increase:
+    action_bar: ""
+    title: "&a%skill_name%"
+    subtitle: "Новый уровень &a%level%!"
+    chat: "&a%skill_name%&f: Новый уровень &a%level%!"
+  experience_gain:
+    action_bar: "%skill_name% &a%exp% ▲"
+    title: ""
+    subtitle: ""
+    chat: ""
+
 interact:
   too_far: "Слишком далеко"
   on_air: "Вы не можете сделать этого прыгая или падая"
