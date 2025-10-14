@@ -15,7 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.s1queence.S1queenceLib.logicItemManager;
 import static org.s1queence.api.S1Booleans.isLuck;
+import static org.s1queence.api.logic_item.LogicItemManager.setCantChangeLore;
+import static org.s1queence.api.logic_item.LogicItemManager.setCantChangeName;
 
 public class S1TextUtils {
 
@@ -108,13 +111,29 @@ public class S1TextUtils {
 
     @SuppressWarnings("unchecked")
     public static ItemStack createItemFromMap(Map<String, Object> mappedItem) {
-        if (mappedItem.get("material") == null) return null;
-        Material material = Material.getMaterial(mappedItem.get("material").toString().toUpperCase());
-        if (material == null) return null;
+        Object configMat = mappedItem.get("material");
+        Object configS1GeneratedType = mappedItem.get("s1_generated_type");
+        if (configMat == null && configS1GeneratedType == null) return null;
+
+        ItemStack generated = configS1GeneratedType != null ? logicItemManager.getGenerated(configS1GeneratedType.toString()) : null;
+
+        Material material = configMat != null ? Material.getMaterial(configMat.toString().toUpperCase()) : null;
+
+        ItemStack is = generated != null ? generated : material != null ? new ItemStack(material) : null;
+
+        if (is == null) return null;
+
+        material = is.getType();
 
         Object amount = mappedItem.get("amount") instanceof Integer ? mappedItem.get("amount") : 1;
         if ((int)amount != 1) amount = Math.min(Math.max((int)amount, 1), material.getMaxStackSize());
-        ItemStack is = new ItemStack(material, (int)amount);
+        is.setAmount((int)amount);
+
+        Object cantChangeName = mappedItem.get("cant_change_name");
+        if (cantChangeName instanceof Boolean) setCantChangeName(is, (Boolean)cantChangeName);
+
+        Object cantChangeLore = mappedItem.get("cant_change_lore");
+        if (cantChangeLore instanceof Boolean) setCantChangeLore(is, (Boolean)cantChangeLore);
 
         ItemMeta im = is.getItemMeta();
 
@@ -151,9 +170,19 @@ public class S1TextUtils {
             if (!isLuck((double)dropChance)) return null;
         }
 
-        if (mappedItem.get("material") == null) return null;
-        Material material = Material.getMaterial(mappedItem.get("material").toString().toUpperCase());
-        if (material == null) return null;
+        Object configMat = mappedItem.get("material");
+        Object configS1GeneratedType = mappedItem.get("s1_generated_type");
+        if (configMat == null && configS1GeneratedType == null) return null;
+
+        ItemStack generated = configS1GeneratedType != null ? logicItemManager.getGenerated(configS1GeneratedType.toString()) : null;
+
+        Material material = configMat != null ? Material.getMaterial(configMat.toString().toUpperCase()) : null;
+
+        ItemStack is = generated != null ? generated : material != null ? new ItemStack(material) : null;
+
+        if (is == null) return null;
+
+        material = is.getType();
 
         Object amountValue = mappedItem.get("amount");
         Object amount = amountValue instanceof Integer || amountValue instanceof Section ? amountValue : 1;
@@ -169,8 +198,13 @@ public class S1TextUtils {
         }
 
         if ((int)amount != 1) amount = Math.min(Math.max((int)amount, 1), material.getMaxStackSize());
+        is.setAmount((int)amount);
 
-        ItemStack is = new ItemStack(material, (int)amount);
+        Object cantChangeName = mappedItem.get("cant_change_name");
+        if (cantChangeName instanceof Boolean) setCantChangeName(is, (Boolean)cantChangeName);
+
+        Object cantChangeLore = mappedItem.get("cant_change_lore");
+        if (cantChangeLore instanceof Boolean) setCantChangeLore(is, (Boolean)cantChangeLore);
 
         ItemMeta im = is.getItemMeta();
 
