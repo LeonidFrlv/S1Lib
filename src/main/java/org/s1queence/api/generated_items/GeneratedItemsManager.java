@@ -6,6 +6,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.s1queence.api.ItemStackNBTUtils.applyStringToNbt;
+import static org.s1queence.api.logic_item.LogicItemManager.MAIN_NBT_ITEM_PATH;
+
 public class GeneratedItemsManager {
     private final Map<String, ItemStack> generatedItems = new HashMap<>();
 
@@ -15,6 +18,7 @@ public class GeneratedItemsManager {
     }
 
     public void addGenerated(String key, ItemStack item) {
+        applyStringToNbt(item, MAIN_NBT_ITEM_PATH, key);
         generatedItems.put(key, item);
     }
 
