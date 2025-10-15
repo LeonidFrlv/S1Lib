@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.s1queence.S1queenceLib.logicItemManager;
+import static org.s1queence.S1queenceLib.generatedItemsManager;
+import static org.s1queence.api.ItemStackNBTUtils.setCantChangeLore;
+import static org.s1queence.api.ItemStackNBTUtils.setCantChangeName;
 import static org.s1queence.api.S1Booleans.isLuck;
-import static org.s1queence.api.logic_item.LogicItemManager.setCantChangeLore;
-import static org.s1queence.api.logic_item.LogicItemManager.setCantChangeName;
 
 public class S1TextUtils {
 
@@ -115,7 +115,7 @@ public class S1TextUtils {
         Object configS1GeneratedType = mappedItem.get("s1_generated_type");
         if (configMat == null && configS1GeneratedType == null) return null;
 
-        ItemStack generated = configS1GeneratedType != null ? logicItemManager.getGenerated(configS1GeneratedType.toString()) : null;
+        ItemStack generated = configS1GeneratedType != null ? generatedItemsManager.getGenerated(configS1GeneratedType.toString()) : null;
 
         Material material = configMat != null ? Material.getMaterial(configMat.toString().toUpperCase()) : null;
 
@@ -174,7 +174,7 @@ public class S1TextUtils {
         Object configS1GeneratedType = mappedItem.get("s1_generated_type");
         if (configMat == null && configS1GeneratedType == null) return null;
 
-        ItemStack generated = configS1GeneratedType != null ? logicItemManager.getGenerated(configS1GeneratedType.toString()) : null;
+        ItemStack generated = configS1GeneratedType != null ? generatedItemsManager.getGenerated(configS1GeneratedType.toString()) : null;
 
         Material material = configMat != null ? Material.getMaterial(configMat.toString().toUpperCase()) : null;
 

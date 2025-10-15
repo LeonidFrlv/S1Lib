@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.s1queence.api.YamlConfigUtil;
+import org.s1queence.api.generated_items.GeneratedItemsManager;
 import org.s1queence.api.interactive_display.InteractiveDisplayManager;
 import org.s1queence.api.interactive_display.interact_event.DisplayInteractEventCaller;
 import org.s1queence.api.interactive_display.listeners.InteractiveDisplayRemoveListener;
@@ -24,6 +25,7 @@ public class S1queenceLib extends JavaPlugin {
     public static S1queenceLib lib;
     public static InteractiveDisplayManager interactiveDisplayManager;
     public static LogicItemManager logicItemManager;
+    public static GeneratedItemsManager generatedItemsManager;
     public static SkillsManager skillsManager;
 
     @Override
@@ -39,7 +41,7 @@ public class S1queenceLib extends JavaPlugin {
 
         logicItemManager = new LogicItemManager();
         skillsManager = new SkillsManager();
-
+        generatedItemsManager = new GeneratedItemsManager();
 
         setupInteractiveDisplayManagerUpdater();
 
