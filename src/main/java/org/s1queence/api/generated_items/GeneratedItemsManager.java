@@ -17,8 +17,8 @@ public class GeneratedItemsManager {
         return generatedItems.get(key);
     }
 
-    public void addGenerated(String key, ItemStack item) {
-        applyStringToNbt(item, MAIN_NBT_ITEM_PATH, key);
+    public void addGenerated(String key, ItemStack item, boolean applyKeyToNbt) {
+        if (applyKeyToNbt) applyStringToNbt(item, MAIN_NBT_ITEM_PATH, key);
         generatedItems.put(key, item);
     }
 
