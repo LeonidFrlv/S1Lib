@@ -8,7 +8,9 @@ import org.s1queence.api.generated_items.GeneratedItemsManager;
 import org.s1queence.api.interactive_display.InteractiveDisplayManager;
 import org.s1queence.api.interactive_display.interact_event.DisplayInteractEventCaller;
 import org.s1queence.api.interactive_display.listeners.InteractiveDisplayRemoveListener;
+import org.s1queence.api.logic_item.LogicItemData;
 import org.s1queence.api.logic_item.LogicItemManager;
+import org.s1queence.api.logic_item.ui_inventory_panel.EmptyItemListener;
 import org.s1queence.api.logic_item.ui_inventory_panel.UIPanelItemClickEventCaller;
 import org.s1queence.api.rpg_skills.SkillsManager;
 import org.s1queence.commands.LibCommand;
@@ -28,6 +30,8 @@ public class S1queenceLib extends JavaPlugin {
     public static GeneratedItemsManager generatedItemsManager;
     public static SkillsManager skillsManager;
 
+    public static String EMPTY_ITEM_KEY = "empty_item";
+
     @Override
     public void onEnable() {
 
@@ -43,12 +47,15 @@ public class S1queenceLib extends JavaPlugin {
         skillsManager = new SkillsManager();
         generatedItemsManager = new GeneratedItemsManager();
 
+        logicItemManager.registerUIPanelItem(new LogicItemData(this, optionsConfig, EMPTY_ITEM_KEY));
+
         setupInteractiveDisplayManagerUpdater();
 
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
         getServer().getPluginManager().registerEvents(new DisplayInteractEventCaller(this), this);
         getServer().getPluginManager().registerEvents(new InteractiveDisplayRemoveListener(), this);
         getServer().getPluginManager().registerEvents(new UIPanelItemClickEventCaller(), this);
+        getServer().getPluginManager().registerEvents(new EmptyItemListener(), this);
     }
 
     public void setupInteractiveDisplayManagerUpdater() {

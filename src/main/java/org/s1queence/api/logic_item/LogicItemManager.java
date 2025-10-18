@@ -2,10 +2,12 @@ package org.s1queence.api.logic_item;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.s1queence.api.logic_item.ui_inventory_panel.UIPanelItem;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.s1queence.S1queenceLib.EMPTY_ITEM_KEY;
 import static org.s1queence.api.ItemStackNBTUtils.*;
 
 public class LogicItemManager {
@@ -50,6 +52,14 @@ public class LogicItemManager {
         String type = getUIPanelItemType(item);
         if (type == null) return false;
         return registeredUIPanelItems.get(type) != null;
+    }
+
+    public UIPanelItem getEmptyItem() {
+        return new UIPanelItem(EMPTY_ITEM_KEY);
+    }
+
+    public boolean isEmptyItem(ItemStack item) {
+        return EMPTY_ITEM_KEY.equals(getUIPanelItemType(item));
     }
 
     public LogicItemData getLogicItem(String type) {
