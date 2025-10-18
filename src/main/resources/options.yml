@@ -1,5 +1,6 @@
 empty_item:
   item:
+    material: ENCHANTED_BOOK
     hide_tooltip: true
 
 # sound - путь до звука в ресурспаке или майнкрафте
